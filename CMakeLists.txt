@@ -26,13 +26,13 @@ include(cmake/PreventInSourceBuilds.cmake)
 include(ProjectOptions.cmake)
 
 
-# inae_setup_options()
+inae_setup_options()
 
-# inae_global_options()
+inae_global_options()
 include(Dependencies.cmake)
 inae_setup_dependencies()
 
-# inae_local_options()
+inae_local_options()
 
 # don't know if this should be set globally from here or not...
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
@@ -46,10 +46,10 @@ string(
             8
             GIT_SHORT_SHA)
 
-# target_compile_features(inae_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+target_compile_features(inae_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
-# add_library(inae::inae_options ALIAS inae_options)
-# add_library(inae::inae_warnings ALIAS inae_warnings)
+add_library(inae::inae_options ALIAS inae_options)
+add_library(inae::inae_warnings ALIAS inae_warnings)
 
 #add_library(inae::inae_options INTERFACE IMPORTED)
 #add_library(inae::inae_warnings INTERFACE IMPORTED)
@@ -102,20 +102,20 @@ include(cmake/PackageProject.cmake)
 
 # Add other targets that you want installed here, by default we just package the one executable
 # we know we want to ship
-# inae_package_project(
-#   TARGETS
+inae_package_project(
+  TARGETS
   # intro
-  # inae_options
-  # inae_warnings
+  inae_options
+  inae_warnings
   # FIXME: this does not work! CK
   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-# )
+)
 
 # Experience shows that explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you
 # track a build to a specific GIT SHA
-# set(CPACK_PACKAGE_FILE_NAME
-#     "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
-# )
+set(CPACK_PACKAGE_FILE_NAME
+    "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
+)
 
 # include(CPack)
