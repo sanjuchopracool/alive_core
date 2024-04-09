@@ -1,0 +1,8 @@
+--------------------------------------------
+Integrating new Skia Lib
+Check font.h file enums if they are compatible with skia
+
+--------------------------------------------
+Creating Graph
+
+ cmake -DCMAKE_PREFIX_PATH=/Users/sanju/Qt/6.5.3/macos/ -S ../inae --graphviz=graph.dot && dot -Tpng graph.dot -o graph.png

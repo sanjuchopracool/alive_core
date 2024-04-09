@@ -1,0 +1,58 @@
+#include "shape_transformation_node.h"
+#include <core/model/shape_items/shape_transformation.h>
+#include <core/composition/paint_context.h>
+#include <include/core/SkCanvas.h>
+#include <core/model/property/dynamic_property_animator.h>
+
+namespace inae::model {
+
+ShapeTransformationNode::ShapeTransformationNode(const ShapeTransformation *transformation)
+    : ShapeAnimationNode(transformation)
+    , m_anchor(create_animator(transformation->anchor(), this))
+    , m_position(create_animator(transformation->position(), this))
+    , m_scale(create_animator(transformation->scale(), this))
+    , m_rotation(create_animator(transformation->rotation(), this))
+    , m_opacity(create_animator(transformation->opacity(), this))
+    , m_skew(create_animator(transformation->skew(), this))
+    , m_skew_axis(create_animator(transformation->skew_axis(), this))
+{
+}
+
+bool ShapeTransformationNode::update(UpdateContext &context)
+{
+    m_dirty = false;
+    update_transform(context);
+    return m_dirty;
+}
+
+void ShapeTransformationNode::draw(PaintContext &context) const
+{
+    context.canvas.concat(transform());
+}
+
+SkMatrix ShapeTransformationNode::transform() const
+{
+    auto anchor = m_anchor->value();
+    auto pos = m_position->value();
+    auto rotation = m_rotation->value();
+    auto scale = m_scale->value() / 100;
+
+    SkMatrix tr;
+    tr.preTranslate(pos.x, pos.y)
+        .preRotate(rotation)
+        .preScale(scale.x, scale.y)
+        .preTranslate(-anchor.x, -anchor.y);
+
+    return tr;
+}
+void ShapeTransformationNode::update_transform(UpdateContext &context)
+{
+    m_anchor->update(context);
+    m_position->update(context);
+    m_rotation->update(context);
+    m_scale->update(context);
+    m_opacity->update(context);
+    m_skew->update(context);
+    m_skew_axis->update(context);
+}
+} // namespace inae::model
