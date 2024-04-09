@@ -5,6 +5,9 @@ include(cmake/CPM.cmake)
 # targets
 function(inae_setup_dependencies)
 
+   find_package(Boost REQUIRED COMPONENTS system)
+   include_directories(${Boost_INCLUDE_DIRS})
+
   # For each dependency, see if it's
   # already been provided to us by a parent project
 
