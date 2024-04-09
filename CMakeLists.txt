@@ -16,10 +16,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the project name and language
 project(
-  inae
+  inae_core
   VERSION 0.0.1
   DESCRIPTION ""
-  HOMEPAGE_URL "https://github.com/sanjuchopracool/inae"
+  HOMEPAGE_URL "https://github.com/sanjuchopracool/inae_core"
   LANGUAGES CXX C)
 
 include(cmake/PreventInSourceBuilds.cmake)
