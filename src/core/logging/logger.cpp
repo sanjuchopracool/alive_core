@@ -31,4 +31,11 @@ std::shared_ptr<spdlog::logger> &get_logger()
     return main_logger;
 }
 
+void set_core_logger_level(spdlog::level::level_enum level)
+{
+    if (main_logger) {
+        main_logger->set_level(level);
+    }
+}
+
 } // namespace inae::Logger

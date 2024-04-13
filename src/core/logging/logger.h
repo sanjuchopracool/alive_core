@@ -10,6 +10,7 @@ void init();
 void de_init();
 
 std::shared_ptr<spdlog::logger> &get_logger();
+void set_core_logger_level(spdlog::level::level_enum level);
 
 } // namespace inae::Logger
 
