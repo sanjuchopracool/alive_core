@@ -4,7 +4,6 @@
 #include "path_element.h"
 #include <include/core/SkPath.h>
 #include <core/model/keyframes/keyframe_utility.h>
-#include <core/private/json.h>
 #include <core/profiler.h>
 #include <vector>
 
@@ -25,8 +24,6 @@ public:
     //    void decode(const QJsonValue &in_value);
     const SkPath &path() const;
     bool operator!=(BezierPath &other) const;
-
-    void decode(json::JsonObject &in_value);
 
 public:
     std::vector<PathElement> m_elements;

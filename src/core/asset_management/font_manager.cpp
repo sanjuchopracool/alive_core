@@ -75,7 +75,7 @@ std::size_t FontManager::families_count() const
     return m_d->family_name.size();
 }
 
-int FontManager::family_index(const std::string &name)
+int FontManager::family_index(const std::string &name) const
 {
     auto it = m_d->family_name_to_family_id.find(name);
     if (it != m_d->family_name_to_family_id.end()) {

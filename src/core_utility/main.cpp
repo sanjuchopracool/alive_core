@@ -1,15 +1,13 @@
-#include <iostream>
-#include <core/initializer.h>
-#include <cxxopts.hpp>
-#include <fmt/format.h>
-#include <filesystem>
-#include <fstream>
-#include <nlohmann/json.hpp>
-#include <core/serializer/serializer.h>
-#include <core/inae_version.h>
-#include <core/model/composition.h>
 #include <core/exporter/exporter.h>
-
+#include <core/inae_version.h>
+#include <core/initializer.h>
+#include <core/model/composition.h>
+#include <core/serializer/inae_parser.h>
+#include <cxxopts.hpp>
+#include <filesystem>
+#include <fmt/format.h>
+#include <fstream>
+#include <iostream>
 
 using namespace inae;
 const std::string k_resources_key{"resources"};
@@ -113,10 +111,14 @@ int main(int argc, char *argv[])
 
     core::Initializer core_init(resources_dir);
     std::ifstream ifs(input_file_path.c_str());
-    nlohmann::json obj = nlohmann::json::parse(ifs);
-    inae::Version version;
-    inae::core::SerializerWarnings messages;
-    auto comp = core::Serializer::parse_core(obj, messages, version);
+    ifs.seekg(0, std::ios::end);
+    size_t size = ifs.tellg();
+    std::string buffer(size, ' ');
+    ifs.seekg(0);
+    ifs.read(&buffer[0], size);
+    inae::core::parser::InaeProjectInformation setting;
+    inae::core::parser::ParserMessages messages;
+    auto comp = inae::core::parser::parse_inae(buffer.c_str(), setting, messages);
     if (comp) {
         exporter::Exporter image_exporter = exporter::Exporter(comp.get());
         if (!output_dir_path.empty())

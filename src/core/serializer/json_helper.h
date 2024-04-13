@@ -2,9 +2,12 @@
 #define JSON_HELPER_H
 
 #include <core/common_types.h>
-#include <core/model/text_primitives/text_document_property.h>
 #include <nlohmann/json.hpp>
-#include <core/path_primitives/bezier_path.h>
+
+namespace inae::core {
+class TextDocumentProperty;
+class BezierPath;
+} // namespace inae::core
 
 namespace inae::json {
 using JsonObject = nlohmann::json;
@@ -39,10 +42,7 @@ inline JsonObject json_value(const unsigned int &value)
     return value;
 }
 
-inline JsonObject json_value(const core::TextDocumentProperty &value)
-{
-    return value.to_json();
-}
+JsonObject json_value(const core::TextDocumentProperty &text);
 
 inline void decode(int &val, const JsonObject &in_value)
 {
@@ -109,15 +109,8 @@ inline JsonObject keyframe_tangent_to_json(const Vec2D &obj)
 //    color.setW(array_value.at(3).toDouble());
 //}
 
-inline void decode(core::BezierPath &path, JsonObject &in_value)
-{
-    path.decode(in_value.is_array() ? in_value.at(0) : in_value);
-}
-
-inline void decode(core::TextDocumentProperty &text, JsonObject &in_value)
-{
-    text.decode(in_value.is_array() ? in_value.at(0) : in_value);
-}
+void decode(core::BezierPath &path, JsonObject &in_value);
+void decode(core::TextDocumentProperty &text, JsonObject &in_value);
 
 } // namespace inae::json
 #endif // JSON_HELPER_H

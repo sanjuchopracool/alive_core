@@ -4,12 +4,7 @@
 #include <core/common_types.h>
 #include <core/font.h>
 #include <core/model/keyframes/keyframe_utility.h>
-#include <core/private/json.h>
 #include <include/core/SkPaint.h>
-
-namespace inae::json {
-using JsonObject = nlohmann::json;
-}
 
 namespace inae::core {
 class TextDocumentProperty
@@ -32,9 +27,6 @@ public:
     SkPaint::Join m_join_style = SkPaint::kMiter_Join;
 
     bool operator!=(const TextDocumentProperty &other) const;
-    void decode(json::JsonObject &in_value);
-    json::OrderedJsonObject to_json() const;
-
     SkRect bbox() const;
 };
 
