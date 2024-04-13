@@ -1,2 +1,3 @@
 add_subdirectory(core)
 add_subdirectory(core_utility)
+add_subdirectory(c_wrapper)
