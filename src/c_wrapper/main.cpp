@@ -8,5 +8,6 @@ int main()
     std::cout << "inae_init error: " << error << std::endl;
     inae_de_init(error);
     std::cout << "inae_de_init error: " << error << std::endl;
+    std::cout << add(5, 4) << std::endl;
     return 0;
 }

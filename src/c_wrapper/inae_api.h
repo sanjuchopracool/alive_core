@@ -31,6 +31,7 @@ extern "C" {
 
 INAE_CORE_SHARED_EXPORT uint8_t inae_init(char *error);
 INAE_CORE_SHARED_EXPORT uint8_t inae_de_init(char *error);
+INAE_CORE_SHARED_EXPORT int add(int a, int b);
 
 #ifdef __cplusplus
 }

@@ -176,6 +176,7 @@ add_library(core
     font.h
     asset_management/font_manager.cpp
     skia_conversion/skia_to_inae.h skia_conversion/skia_to_inae.cpp
+    serializer/inae_parser.h serializer/inae_parser.cpp
     # model/common/font_setting.h model/common/font_setting.cpp
 )
 

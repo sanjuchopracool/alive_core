@@ -1,6 +1,7 @@
 #include "inae_api.h"
 #include <core/initializer.h>
 #include <filesystem>
+#include <iostream>
 #include <string>
 
 using namespace inae::core;
@@ -36,4 +37,9 @@ uint8_t inae_de_init(char *error)
     } else {
         return 1;
     }
+}
+
+int add(int a, int b)
+{
+    return a + b;
 }
