@@ -8,7 +8,7 @@ namespace inae::model {
 class NullLayer : public Layer
 {
 public:
-    NullLayer(Object *object);
+    NullLayer(Object *object, int index = -1);
 };
 } // namespace inae::model
 

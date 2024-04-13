@@ -9,7 +9,7 @@ namespace inae::model {
 class SolidLayer : public Layer
 {
 public:
-    SolidLayer(Object *object);
+    SolidLayer(Object *object, int index = -1);
     ~SolidLayer() override;
 
     int width() const { return m_width; }

@@ -2,8 +2,10 @@
 
 namespace inae::model {
 inline const auto k_null_layer_descriptor = LayerDescriptor("Null", LayerType::e_Null);
-NullLayer::NullLayer(Object *object)
+NullLayer::NullLayer(Object *object, int index)
     : Layer(object, k_null_layer_descriptor)
-{}
+{
+    set_layer_index(index);
+}
 
 } // namespace inae::model

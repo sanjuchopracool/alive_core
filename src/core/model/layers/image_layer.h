@@ -8,7 +8,7 @@ namespace inae::model {
 class ImageLayer : public Layer
 {
 public:
-    ImageLayer(Object *object);
+    ImageLayer(Object *object, int index = -1);
 
     const std::string &path() const;
     void set_path(const std::string &path);

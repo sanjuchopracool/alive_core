@@ -16,10 +16,11 @@ inline const ObjectDescriptor &text_group_descriptor()
     return text_group_descriptor;
 }
 
-TextLayer::TextLayer(Object *object)
+TextLayer::TextLayer(Object *object, int index)
     : Layer(object, text_layer_descriptor())
     , m_text_group(std::make_unique<Object>(this, text_group_descriptor()))
 {
+    set_layer_index(index);
     remove_item(&m_text);
     m_text_group->insert_item_at_index(&m_text, 0);
     move_item(1, 0);

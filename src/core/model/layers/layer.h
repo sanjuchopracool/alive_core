@@ -9,7 +9,6 @@
 #include <set>
 
 namespace inae::model {
-class EditorLayer;
 enum class MatteType { e_None, e_Alpha, e_AlphaInvert, e_Luma, e_LumaInvert, e_Last };
 enum class BlendMode {
     e_Normal,
@@ -165,8 +164,6 @@ public:
 
     bool is_blinking() const { return m_blink; }
     void set_blink(bool blink) { m_blink = blink; }
-
-    virtual EditorLayer *to_editor_layer() { return nullptr; }
 
 protected:
     bool set_layer_index(int index)

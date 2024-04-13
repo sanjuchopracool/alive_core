@@ -11,7 +11,7 @@ class TextLayer : public Layer
 {
     ADD_TEXT
 public:
-    TextLayer(Object *object);
+    TextLayer(Object *object, int index = -1);
     ~TextLayer() override;
 
 private:

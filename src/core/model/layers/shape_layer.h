@@ -9,7 +9,7 @@ namespace inae::model {
 class ShapeLayer : public Layer
 {
 public:
-    ShapeLayer(Object *object);
+    ShapeLayer(Object *object, int index = -1);
     ~ShapeLayer() override;
 
     void add_shape_item_at_index(ShapeItem *shape, int index);

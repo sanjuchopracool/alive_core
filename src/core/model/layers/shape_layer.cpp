@@ -15,10 +15,11 @@ const ObjectDescriptor &content_group_descriptor()
     return group_descriptor;
 }
 
-ShapeLayer::ShapeLayer(Object *object)
+ShapeLayer::ShapeLayer(Object *object, int index)
     : Layer(object, shape_layer_descriptor())
     , m_group(std::make_unique<Group>(content_group_descriptor()))
 {
+    set_layer_index(index);
     insert_item_at_index(m_group.get(), 0);
     observe(m_group.get());
 }
