@@ -178,6 +178,9 @@ add_library(core
     skia_conversion/skia_to_inae.h skia_conversion/skia_to_inae.cpp
     serializer/inae_parser.h serializer/inae_parser.cpp
     serializer/json_helper.cpp
+    asset_management/database.h
+    empty_values.h
+    asset_management/asset.cpp
     # model/common/font_setting.h model/common/font_setting.cpp
 )
 

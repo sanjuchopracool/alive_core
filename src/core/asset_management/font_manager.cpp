@@ -3,6 +3,8 @@
 #include <core/resource_manager.h>
 #include <core/skia_conversion/skia_to_inae.h>
 
+#include "database.h"
+#include <core/empty_values.h>
 #include <core/logging/logger.h>
 #include <filesystem>
 #include <include/core/SkFontMgr.h>
@@ -18,7 +20,7 @@ std::unique_ptr<FontManager> the_instance;
 struct FontInfo
 {
     sk_sp<SkTypeface> typeface;
-    bool is_system;
+    DatabaseAssetId db_id;
 };
 
 struct FamilyInfo
@@ -68,7 +70,7 @@ void FontManager::load_system_fonts()
         for (size_t i = 0; i < sys_font_mgr.countFamilies(); ++i) {
             const auto styleset = sys_font_mgr.createStyleSet(i);
             for (size_t j = 0; j < styleset->count(); ++j) {
-                add_typeface(styleset->createTypeface(j), true);
+                add_typeface(styleset->createTypeface(j), k_invalid_db_id);
             }
         }
         m_d->system_fonts_loaded = true;
@@ -83,12 +85,13 @@ void FontManager::load_fonts_from_path(const std::filesystem::path &font_dir)
         return;
     }
 
+    DatabaseAssetId id{0, 0};
     for (auto &entry : fs::recursive_directory_iterator(font_dir)) {
         const auto &path = entry.path();
         if (path.extension() == ".ttf") {
             INAE_CORE_TRACE("Loading fonts from file {}", path.string());
             auto typeface = ResourceManager::system_font_manager().makeFromFile(path.c_str());
-            add_typeface(typeface);
+            add_typeface(typeface, id);
         }
     }
 }
@@ -170,7 +173,7 @@ int FontManager::style_index(size_t family_id, const std::string &name) const
 bool FontManager::is_system(size_t family_id, size_t font_id) const
 {
     if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
-        return m_d->fonts[family_id][font_id].is_system;
+        return !m_d->fonts[family_id][font_id].db_id.is_valid();
     }
     return false;
 }
@@ -183,7 +186,7 @@ FontImpl *FontManager::font_impl(size_t family_id, size_t font_id) const
     return nullptr;
 }
 
-void FontManager::add_typeface(sk_sp<SkTypeface> typeface, bool is_system)
+void FontManager::add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId &db_id)
 {
     if (typeface) {
         SkString family;
@@ -205,13 +208,13 @@ void FontManager::add_typeface(sk_sp<SkTypeface> typeface, bool is_system)
         auto &fonts = m_d->fonts;
         if (id >= fonts.size()) {
             fonts.emplace_back();
-            fonts.back().emplace_back(typeface, is_system);
+            fonts.back().emplace_back(typeface, db_id);
             m_d->family_info.emplace_back(family_name);
         } else {
-            fonts[id].emplace_back(typeface, is_system);
+            fonts[id].emplace_back(typeface, db_id);
         }
 
-        if (is_system) {
+        if (!db_id.is_valid()) {
             m_d->family_info[id].contains_system_fonts = true;
         } else {
             m_d->family_info[id].contains_db_fonts = true;

@@ -10,7 +10,7 @@ class SkTypeface;
 
 namespace inae::core {
 struct FontManagerPrivateData;
-
+struct DatabaseAssetId;
 using FontImpl = SkTypeface;
 class FontManager : boost::noncopyable
 {
@@ -37,7 +37,7 @@ public:
     FontImpl *font_impl(size_t family_id, size_t font_id) const;
 
 private:
-    void add_typeface(sk_sp<SkTypeface> typeface, bool is_system = false);
+    void add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId &db_id);
 
 private:
     FontManager();
