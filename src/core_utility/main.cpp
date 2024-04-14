@@ -109,7 +109,8 @@ int main(int argc, char *argv[])
         // default path
     }
 
-    core::Initializer core_init(resources_dir);
+    inae::core::Initializer::Params param(spdlog::level::level_enum::debug, resources_dir);
+    core::Initializer core_init(param);
     std::ifstream ifs(input_file_path.c_str());
     ifs.seekg(0, std::ios::end);
     size_t size = ifs.tellg();

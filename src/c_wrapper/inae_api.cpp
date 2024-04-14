@@ -14,8 +14,9 @@ uint8_t inae_init(char *error)
     uint8_t status = 1;
     if (!core_initializer) {
         try {
-            core_initializer = std::make_unique<Initializer>(
-                std::string_view("/Users/sanju/PROJECTS/inae_resources"));
+            inae::core::Initializer::Params param(spdlog::level::level_enum::debug,
+                                                  "/Users/sanju/PROJECTS/inae_resources");
+            core_initializer = std::make_unique<Initializer>(param);
             status = 0;
         } catch (const std::filesystem::filesystem_error &e) {
             const std::string str(e.what());

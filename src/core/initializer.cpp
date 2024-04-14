@@ -5,10 +5,10 @@
 namespace inae::core {
 static int init_counter = 0;
 
-void init(std::string_view resource_path)
+void init(const Initializer::Params &param)
 {
-    Logger::init();
-    ResourceManager::init_from_path(resource_path);
+    Logger::init(param.log_level);
+    ResourceManager::init_from_path(param.resource_path);
 }
 
 void de_init()
@@ -16,10 +16,10 @@ void de_init()
     Logger::de_init();
 }
 
-Initializer::Initializer(std::string_view resource_path)
+Initializer::Initializer(const Params &param)
 {
     if (init_counter++ == 0) {
-        init(resource_path);
+        init(param);
     }
 }
 
