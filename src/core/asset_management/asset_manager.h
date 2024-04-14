@@ -11,10 +11,14 @@ struct AssetManagerPrivateData;
 class AssetManager : public boost::noncopyable
 {
 public:
-    AssetManager();
     ~AssetManager();
+    void load_file_databse(const std::string &path);
+
+    static void init();
+    static AssetManager &instance();
 
 private:
+    AssetManager();
     std::unique_ptr<AssetManagerPrivateData> m_d;
 };
 } // namespace inae::core

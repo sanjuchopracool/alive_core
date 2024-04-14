@@ -3,7 +3,9 @@
 
 #include <compare>
 #include <cstdint>
+#include <include/core/SkData.h>
 #include <limits>
+#include <string>
 
 namespace inae::core {
 using DataBaseId = uint32_t;
@@ -26,6 +28,19 @@ struct DatabaseAssetId
         return db_id != k_invalid_database_id && item_id != k_invalid_db_item_id;
     }
 };
+
+class Database
+{
+public:
+    Database(const std::string &name, DataBaseId id);
+    virtual ~Database();
+    virtual sk_sp<SkData> data(AssetType type, DbItemId) = 0;
+
+protected:
+    const std::string m_name;
+    const DataBaseId m_id;
+};
+
 } // namespace inae::core
 
 #endif // DATABASE_H

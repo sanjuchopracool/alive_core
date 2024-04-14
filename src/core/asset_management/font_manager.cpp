@@ -77,25 +77,6 @@ void FontManager::load_system_fonts()
     }
 }
 
-void FontManager::load_fonts_from_path(const std::filesystem::path &font_dir)
-{
-    namespace fs = std::filesystem;
-    if (!fs::is_directory(font_dir)) {
-        INAE_CORE_ERROR("Font directory {} does not exist!", font_dir.string());
-        return;
-    }
-
-    DatabaseAssetId id{0, 0};
-    for (auto &entry : fs::recursive_directory_iterator(font_dir)) {
-        const auto &path = entry.path();
-        if (path.extension() == ".ttf") {
-            INAE_CORE_TRACE("Loading fonts from file {}", path.string());
-            auto typeface = ResourceManager::system_font_manager().makeFromFile(path.c_str());
-            add_typeface(typeface, id);
-        }
-    }
-}
-
 std::size_t FontManager::families_count() const
 {
     return m_d->family_info.size();

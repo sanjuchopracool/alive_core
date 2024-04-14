@@ -181,6 +181,8 @@ add_library(core
     asset_management/database.h
     empty_values.h
     asset_management/asset.cpp
+    asset_management/database.cpp
+    asset_management/file_database.h asset_management/file_database.cpp
     # model/common/font_setting.h model/common/font_setting.cpp
 )
 

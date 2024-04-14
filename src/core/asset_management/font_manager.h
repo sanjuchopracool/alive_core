@@ -3,7 +3,6 @@
 
 #include "include/core/SkRefCnt.h"
 #include <boost/noncopyable.hpp>
-#include <filesystem>
 #include <memory>
 
 class SkTypeface;
@@ -21,8 +20,6 @@ public:
     static FontManager &instance();
 
     void load_system_fonts();
-    void load_fonts_from_path(const std::filesystem::path &font_dir);
-
     std::size_t families_count() const;
     int family_index(const std::string &name) const;
     std::pair<int, int> default_index() const;
@@ -35,8 +32,6 @@ public:
     int style_index(size_t family_id, const std::string &name) const;
     bool is_system(size_t family_id, size_t font_id) const;
     FontImpl *font_impl(size_t family_id, size_t font_id) const;
-
-private:
     void add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId &db_id);
 
 private:

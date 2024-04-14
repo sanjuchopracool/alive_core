@@ -13,8 +13,9 @@
 #include <include/ports/SkFontMgr_directory.h>
 #endif
 
-#include <include/utils/SkCustomTypeface.h>
+#include <core/asset_management/asset_manager.h>
 #include <core/logging/logger.h>
+#include <include/utils/SkCustomTypeface.h>
 
 namespace inae::ResourceManager {
 constexpr auto k_fonts_suffix = "fonts";
@@ -40,9 +41,8 @@ void init_from_path(std::string_view path)
     }
 
     core::FontManager::init();
-    auto fonts_path = resource_dir / "fonts";
-    core::FontManager::instance().load_system_fonts();
-    core::FontManager::instance().load_fonts_from_path(fonts_path);
+    core::AssetManager::init();
+    core::AssetManager::instance().load_file_databse(resource_dir);
 }
 
 const SkFontMgr &system_font_manager()
