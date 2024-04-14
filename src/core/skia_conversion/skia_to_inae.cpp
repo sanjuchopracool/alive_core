@@ -1,8 +1,19 @@
 #include "skia_to_inae.h"
 #include <core/logging/logger.h>
 #include <include/core/SkFontStyle.h>
+#include <map>
 
 namespace inae::skia {
+
+struct CompareSkFontStyle
+{
+    bool operator()(const SkFontStyle &l, const SkFontStyle &r) const
+    {
+        return (l.width() << r.width()) || (l.weight() << r.weight()) || (l.slant() << r.slant());
+    }
+};
+
+std::map<SkFontStyle, std::string, CompareSkFontStyle> font_style_to_name;
 
 std::string font_weight_to_string(int weight)
 {
@@ -132,8 +143,15 @@ std::string font_slant_to_string(int slant)
 
 std::string to_string(const SkFontStyle &style)
 {
-    return font_weight_to_string(style.weight()) + font_width_to_string(style.width())
-           + font_slant_to_string(style.slant());
+    auto it = font_style_to_name.find(style);
+    if (it != font_style_to_name.end()) {
+        return it->second;
+    }
+
+    std::string result = font_weight_to_string(style.weight()) + font_width_to_string(style.width())
+                         + font_slant_to_string(style.slant());
+    font_style_to_name[style] = result;
+    return result;
 }
 
 } // namespace inae::skia

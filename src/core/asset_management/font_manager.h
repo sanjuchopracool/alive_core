@@ -32,6 +32,7 @@ public:
 
     std::size_t style_count(size_t family_id) const;
     std::string style_name(size_t family_id, size_t font_id) const;
+    int style_index(size_t family_id, const std::string &name) const;
     bool is_system(size_t family_id, size_t font_id) const;
     FontImpl *font_impl(size_t family_id, size_t font_id) const;
 

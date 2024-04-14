@@ -10,6 +10,7 @@ namespace text_doc_keys {
 const char k_font_size_key[] = "s";
 const char k_fill_color_key[] = "fc";
 const char k_font_family_key[] = "f";
+const char k_inae_font_style_key[] = "inae_fs";
 const char k_text_key[] = "t";
 const char k_stroke_color_key[] = "sc";
 const char k_stroke_width_key[] = "sw";
@@ -40,14 +41,18 @@ void decode_text(core::TextDocumentProperty &text, JsonObject &in_value)
     const auto &font_mgr = core::FontManager::instance();
     temp_json = json_pop(in_value, k_font_family_key);
     if (!temp_json.is_null()) {
-        std::string family_name = temp_json;
+        const std::string family_name = temp_json;
         int index = font_mgr.family_index(family_name);
         if (index == -1) {
             text.m_font.family = font_mgr.default_index().first;
         } else {
             text.m_font.family = index;
         }
-        text.m_font.style = font_mgr.default_index().second;
+        temp_json = json_pop(in_value, k_inae_font_style_key);
+        if (!temp_json.is_null()) {
+            const std::string style_name = temp_json;
+            text.m_font.style = font_mgr.style_index(index, style_name);
+        }
     }
     temp_json = json_pop(in_value, k_text_key);
     if (!temp_json.is_null()) {
@@ -77,6 +82,8 @@ JsonObject json_value(const core::TextDocumentProperty &text)
     nlohmann::ordered_json result;
     result[k_font_size_key] = text.m_font.size;
     result[k_font_family_key] = core::FontManager::instance().family_name(text.m_font.family);
+    result[k_inae_font_style_key] = core::FontManager::instance().style_name(text.m_font.family,
+                                                                             text.m_font.style);
     if (text.m_fill) {
         result[k_fill_color_key] = json::json_value(text.m_fill_color);
     }

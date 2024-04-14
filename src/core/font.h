@@ -1,7 +1,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-namespace inae::core {}
+namespace inae::core {
 struct Font
 {
     float size = 10.0f;
@@ -13,5 +13,6 @@ struct Font
         return size == other.size && family == other.family && style == other.style;
     }
 };
+} // namespace inae::core
 
 #endif // FONT_H

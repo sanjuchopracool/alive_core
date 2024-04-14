@@ -152,6 +152,21 @@ std::string FontManager::style_name(size_t family_id, size_t font_id) const
     return k_unknown_string;
 }
 
+int FontManager::style_index(size_t family_id, const std::string &name) const
+{
+    if (family_id < m_d->fonts.size()) {
+        auto &fonts = m_d->fonts[family_id];
+        int index = 0;
+        for (const auto &font_info : fonts) {
+            if (skia::to_string(font_info.typeface->fontStyle()) == name) {
+                return index;
+            }
+            index++;
+        }
+    }
+    return 0;
+}
+
 bool FontManager::is_system(size_t family_id, size_t font_id) const
 {
     if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
