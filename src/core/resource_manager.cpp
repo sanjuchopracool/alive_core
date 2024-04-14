@@ -20,17 +20,6 @@ namespace inae::ResourceManager {
 constexpr auto k_fonts_suffix = "fonts";
 sk_sp<SkFontMgr> font_mgr;
 
-void load_system_fonts()
-{
-    const auto &sys_font_mgr = system_font_manager();
-    auto &font_mgr = core::FontManager::instance();
-    for (size_t i = 0; i < sys_font_mgr.countFamilies(); ++i) {
-        const auto styleset = sys_font_mgr.createStyleSet(i);
-        for (size_t j = 0; j < styleset->count(); ++j) {
-            font_mgr.add_typeface(styleset->createTypeface(j), true);
-        }
-    }
-}
 void init_from_path(std::string_view path)
 {
     using namespace std::filesystem;
@@ -52,8 +41,8 @@ void init_from_path(std::string_view path)
 
     core::FontManager::init();
     auto fonts_path = resource_dir / "fonts";
+    core::FontManager::instance().load_system_fonts();
     core::FontManager::instance().load_fonts_from_path(fonts_path);
-    load_system_fonts();
 }
 
 const SkFontMgr &system_font_manager()

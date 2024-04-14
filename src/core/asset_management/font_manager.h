@@ -20,14 +20,18 @@ public:
     static void init();
     static FontManager &instance();
 
+    void load_system_fonts();
     void load_fonts_from_path(const std::filesystem::path &font_dir);
+
     std::size_t families_count() const;
     int family_index(const std::string &name) const;
     std::pair<int, int> default_index() const;
-    std::string family_name(size_t family_id) const;
+    const std::string& family_name(size_t family_id) const;
     std::size_t style_count(size_t family_id) const;
     std::string style_name(size_t family_id, size_t font_id) const;
     FontImpl *font_impl(size_t family_id, size_t font_id) const;
+
+private:
     void add_typeface(sk_sp<SkTypeface> typeface, bool is_system = false);
 
 private:

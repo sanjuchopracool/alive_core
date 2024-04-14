@@ -21,6 +21,13 @@ struct FontInfo
     bool is_system;
 };
 
+struct FamilyInfo
+{
+    std::string name;
+    bool contains_system_fonts = false;
+    bool contains_db_fonts = false;
+};
+
 struct FontManagerPrivateData
 {
     FontManagerPrivateData()
@@ -30,7 +37,9 @@ struct FontManagerPrivateData
     }
     std::map<std::string, uint32_t> family_name_to_family_id;
     std::vector<std::vector<FontInfo>> fonts;
-    std::vector<std::string> family_name;
+    std::vector<FamilyInfo> family_info;
+    int system_font_count = 0;
+    bool system_fonts_loaded = false;
 };
 
 FontManager::FontManager()
@@ -50,6 +59,20 @@ void FontManager::init()
 FontManager &FontManager::instance()
 {
     return *the_instance.get();
+}
+
+void FontManager::load_system_fonts()
+{
+    if (!m_d->system_fonts_loaded) {
+        const auto &sys_font_mgr = inae::ResourceManager::system_font_manager();
+        for (size_t i = 0; i < sys_font_mgr.countFamilies(); ++i) {
+            const auto styleset = sys_font_mgr.createStyleSet(i);
+            for (size_t j = 0; j < styleset->count(); ++j) {
+                add_typeface(styleset->createTypeface(j), true);
+            }
+        }
+        m_d->system_fonts_loaded = true;
+    }
 }
 
 void FontManager::load_fonts_from_path(const std::filesystem::path &font_dir)
@@ -72,7 +95,7 @@ void FontManager::load_fonts_from_path(const std::filesystem::path &font_dir)
 
 std::size_t FontManager::families_count() const
 {
-    return m_d->family_name.size();
+    return m_d->family_info.size();
 }
 
 int FontManager::family_index(const std::string &name) const
@@ -89,10 +112,10 @@ std::pair<int, int> FontManager::default_index() const
     return {0, 0};
 }
 
-std::string FontManager::family_name(size_t family_id) const
+const std::string &FontManager::family_name(size_t family_id) const
 {
-    if (family_id < m_d->family_name.size()) {
-        return m_d->family_name[family_id];
+    if (family_id < m_d->family_info.size()) {
+        return m_d->family_info[family_id].name;
     }
     return k_unknown_string;
 }
@@ -144,9 +167,15 @@ void FontManager::add_typeface(sk_sp<SkTypeface> typeface, bool is_system)
         if (id >= fonts.size()) {
             fonts.emplace_back();
             fonts.back().emplace_back(typeface, is_system);
-            m_d->family_name.emplace_back(family_name);
+            m_d->family_info.emplace_back(family_name);
         } else {
             fonts[id].emplace_back(typeface, is_system);
+        }
+
+        if (is_system) {
+            m_d->family_info[id].contains_system_fonts = true;
+        } else {
+            m_d->family_info[id].contains_db_fonts = true;
         }
     }
 }
