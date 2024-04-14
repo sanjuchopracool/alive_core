@@ -21,14 +21,8 @@ namespace inae::ResourceManager {
 constexpr auto k_fonts_suffix = "fonts";
 sk_sp<SkFontMgr> font_mgr;
 
-void init_from_path(std::string_view path)
+void init_from_path(const std::string& path)
 {
-    using namespace std::filesystem;
-    std::error_code err{};
-    const std::filesystem::path resource_dir{path};
-    if (!std::filesystem::exists(resource_dir, err)) {
-        throw filesystem_error(fmt::format("resource directory {} does not exist!", path), err);
-    }
     {
 #ifdef _WINDOWS
         font_mgr.reset(SkFontMgr_New_GDI().release());
@@ -42,7 +36,7 @@ void init_from_path(std::string_view path)
 
     core::FontManager::init();
     core::AssetManager::init();
-    core::AssetManager::instance().load_file_databse(resource_dir);
+    core::AssetManager::instance().load_file_databse(path);
 }
 
 const SkFontMgr &system_font_manager()

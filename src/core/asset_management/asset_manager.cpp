@@ -1,6 +1,7 @@
 #include "asset_manager.h"
 #include "file_database.h"
 #include <memory>
+#include <vector>
 
 namespace inae::core {
 
@@ -20,7 +21,7 @@ AssetManager::~AssetManager() {}
 void AssetManager::load_file_databse(const std::string &path)
 {
     m_d->databases.emplace_back(
-        std::make_unique<FileDatabase>(path, "CHECK", m_d->databases.size()));
+        std::make_unique<FileDatabase>(path, "CHECK", static_cast<DataBaseId>(m_d->databases.size())));
 }
 
 void AssetManager::init()

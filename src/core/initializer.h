@@ -2,7 +2,7 @@
 #define INITIALIZER_H
 
 #include "spdlog/common.h"
-#include <string_view>
+#include <string>
 
 namespace inae::core {
 
@@ -12,7 +12,7 @@ public:
     struct Params
     {
         spdlog::level::level_enum log_level;
-        std::string_view resource_path;
+        std::string resource_path;
     };
 
     Initializer(const Params &param);

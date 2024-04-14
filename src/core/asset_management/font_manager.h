@@ -4,6 +4,7 @@
 #include "include/core/SkRefCnt.h"
 #include <boost/noncopyable.hpp>
 #include <memory>
+#include <string>
 
 class SkTypeface;
 

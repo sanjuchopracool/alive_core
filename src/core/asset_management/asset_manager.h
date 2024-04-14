@@ -3,6 +3,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <memory>
+#include <string>
 
 namespace inae::core {
 
