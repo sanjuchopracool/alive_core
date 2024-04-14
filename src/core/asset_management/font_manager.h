@@ -27,8 +27,12 @@ public:
     int family_index(const std::string &name) const;
     std::pair<int, int> default_index() const;
     const std::string& family_name(size_t family_id) const;
+    bool family_contains_system_fonts(size_t family_id) const;
+    bool family_contains_db_fonts(size_t family_id) const;
+
     std::size_t style_count(size_t family_id) const;
     std::string style_name(size_t family_id, size_t font_id) const;
+    bool is_system(size_t family_id, size_t font_id) const;
     FontImpl *font_impl(size_t family_id, size_t font_id) const;
 
 private:

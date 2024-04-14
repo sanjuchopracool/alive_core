@@ -120,6 +120,22 @@ const std::string &FontManager::family_name(size_t family_id) const
     return k_unknown_string;
 }
 
+bool FontManager::family_contains_system_fonts(size_t family_id) const
+{
+    if (family_id < m_d->family_info.size()) {
+        return m_d->family_info[family_id].contains_system_fonts;
+    }
+    return false;
+}
+
+bool FontManager::family_contains_db_fonts(size_t family_id) const
+{
+    if (family_id < m_d->family_info.size()) {
+        return m_d->family_info[family_id].contains_system_fonts;
+    }
+    return false;
+}
+
 std::size_t FontManager::style_count(size_t family_id) const
 {
     if (family_id < m_d->fonts.size()) {
@@ -134,6 +150,14 @@ std::string FontManager::style_name(size_t family_id, size_t font_id) const
         return skia::to_string(m_d->fonts[family_id][font_id].typeface->fontStyle());
     }
     return k_unknown_string;
+}
+
+bool FontManager::is_system(size_t family_id, size_t font_id) const
+{
+    if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
+        return m_d->fonts[family_id][font_id].is_system;
+    }
+    return false;
 }
 
 FontImpl *FontManager::font_impl(size_t family_id, size_t font_id) const
