@@ -41,7 +41,7 @@ void ImageLayerNode::load_image()
     sk_sp<SkData> data = SkData::MakeFromFileName(m_image_layer->path().c_str());
     if (data) {
         m_image = SkImages::DeferredFromEncodedData(data);
-        INAE_CORE_DEBUG("Image Size({})= ({}x{})",
+        INAE_CORE_TRACE("Image Size({})= ({}x{})",
                         m_image_layer->path().c_str(),
                         m_image->width(),
                         m_image->height());
