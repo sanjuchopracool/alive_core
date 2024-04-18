@@ -103,13 +103,11 @@ void LayerNode::update_base_layer_node(UpdateContext &context)
         m_visible = visible;
         CascadeUpdateListener::notify_observers();
     }
-    if (!m_visible)
-        return;
+    // if (!m_visible)
+    //     return;
 
     m_dirty = false;
-    UpdateContext new_context(context.time - m_layer->in_point(),
-                              context.force_update,
-                              context.expr_engine);
+    UpdateContext new_context(context.time, context.force_update, context.expr_engine);
     m_transform->update(new_context);
 }
 
