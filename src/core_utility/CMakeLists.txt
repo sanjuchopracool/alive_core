@@ -3,5 +3,4 @@ target_link_libraries (
     core_utility
     core
     cxxopts
-    fmt
 )
