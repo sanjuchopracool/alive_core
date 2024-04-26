@@ -9,7 +9,7 @@ struct CompareSkFontStyle
 {
     bool operator()(const SkFontStyle &l, const SkFontStyle &r) const
     {
-        return (l.width() << r.width()) || (l.weight() << r.weight()) || (l.slant() << r.slant());
+        return (l.width() < r.width()) || (l.weight() < r.weight()) || (l.slant() < r.slant());
     }
 };
 

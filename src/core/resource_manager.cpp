@@ -25,7 +25,7 @@ void init_from_path(const std::string& path)
 {
     {
 #ifdef _WINDOWS
-        font_mgr.reset(SkFontMgr_New_GDI().release());
+        font_mgr.reset(SkFontMgr_New_DirectWrite().release());
 #elif __APPLE__
         font_mgr.reset(SkFontMgr_New_CoreText(nullptr).release());
 #else
