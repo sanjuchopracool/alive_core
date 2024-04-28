@@ -5,15 +5,40 @@
 
 namespace inae::skia {
 
+namespace {
 struct CompareSkFontStyle
 {
     bool operator()(const SkFontStyle &l, const SkFontStyle &r) const
     {
-        return (l.width() < r.width()) || (l.weight() < r.weight()) || (l.slant() < r.slant());
+        if (l.width() < r.width()) {
+            return true;
+        }
+        if (l.width() > r.width()) {
+            return false;
+        }
+
+        if (l.weight() < r.weight()) {
+            return true;
+        }
+
+        if (l.weight() > r.weight()) {
+            return false;
+        }
+
+        if (l.slant() < r.slant()) {
+            return true;
+        }
+
+        if (l.slant() > r.slant()) {
+            return false;
+        }
+
+        return false;
     }
 };
 
-std::map<SkFontStyle, std::string, CompareSkFontStyle> font_style_to_name;
+static std::map<SkFontStyle, std::string, CompareSkFontStyle> font_style_to_name;
+} // namespace
 
 std::string font_weight_to_string(int weight)
 {
