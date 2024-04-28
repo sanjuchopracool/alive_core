@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace inae;
+
 const std::string k_resources_key{"resources"};
 const std::string k_file_key{"file"};
 const std::string k_scale_key{"scale"};
@@ -109,8 +109,8 @@ int main(int argc, char *argv[])
         // default path
     }
 
-    inae::core::Initializer::Params param(spdlog::level::level_enum::debug, resources_dir);
-    core::Initializer core_init(param);
+    inae::core::Initializer::Params param{spdlog::level::level_enum::debug, resources_dir};
+    inae::core::Initializer core_init(param);
     std::ifstream ifs(input_file_path.c_str());
     ifs.seekg(0, std::ios::end);
     size_t size = ifs.tellg();
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     inae::core::parser::ParserMessages messages;
     auto comp = inae::core::parser::parse_inae(buffer.c_str(), setting, messages);
     if (comp) {
-        exporter::Exporter image_exporter = exporter::Exporter(comp.get());
+        inae::exporter::Exporter image_exporter = inae::exporter::Exporter(comp.get());
         if (!output_dir_path.empty())
         {
             image_exporter.export_as(output_dir_path);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
         if (!output_file_path.empty())
         {
-            image_exporter.export_as(output_file_path.string(), exporter::Exporter::e_WebM);
+            image_exporter.export_as(output_file_path.string(), inae::exporter::Exporter::e_WebM);
         }
 
     } else {
