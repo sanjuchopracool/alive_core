@@ -1,9 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-#ifdef _DEBUG
-#pragma comment(lib, "opencv_world331d.lib")
-#else
-#pragma comment(lib, "opencv_world331.lib")
-#endif
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <vector>
