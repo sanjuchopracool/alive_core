@@ -82,6 +82,7 @@ void LayerNode::draw(PaintContext &context) const
     } else {
         auto new_context = context;
         concat_parent_transformation(new_context.canvas, m_parent_layer);
+        new_context.parent_alpha = context.parent_alpha * m_transform->opacity() / 100;
         new_context.canvas.concat(m_transform->transform());
         if (!context.is_matte_context) {
             auto blend_mode = to_sk_blend_mode(m_layer->blend_mode());
