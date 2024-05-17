@@ -3,7 +3,6 @@
 
 #include "object_descriptor.h"
 #include "property.h"
-#include <vector>
 
 namespace inae::model {
 class Composition;
