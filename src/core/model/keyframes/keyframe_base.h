@@ -59,6 +59,9 @@ public:
     void enable_expression(bool enable) { m_enable_expression = enable; }
     bool expression_enabled() const { return m_enable_expression; }
 
+    bool is_selected_in_editor() const { return m_selected; }
+    void select_in_editor(bool select) const { m_selected = select; }
+
 protected:
     void update_easing_type();
     Property *m_property = nullptr;
@@ -71,6 +74,9 @@ protected:
     Easing m_easing_type = e_None;
     std::string m_expression;
     bool m_enable_expression = true;
+
+    // editor specific property
+    mutable bool m_selected = false;
 };
 
 using KeyFrames = std::vector<KeyFrame *>;
