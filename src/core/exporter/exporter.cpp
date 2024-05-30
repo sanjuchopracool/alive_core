@@ -13,9 +13,9 @@
 #include <atomic>
 #include <condition_variable>
 #include <fmt/format.h>
-#include <libwebp/encode.h>
-#include <libwebp/mux.h>
 #include <mutex>
+#include <third_party/externals/libwebp/src/webp/encode.h>
+#include <third_party/externals/libwebp/src/webp/mux.h>
 
 namespace inae::exporter {
 
