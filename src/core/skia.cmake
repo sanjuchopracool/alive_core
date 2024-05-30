@@ -2,7 +2,11 @@ set(SKIA_PATH ${CORE_THIRD_PARTY_BINARY_DIR}/skia)
 set(SKIA_TAG_NAME "m116-d2c211228d")
 set(SKIA_PREBUILT_DOWNLOAD_BASE_PATH "https://github.com/HumbleUI/SkiaBuild/releases/download")
 
-set(SKIA_BUILD_TYPE "Release")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(SKIA_BUILD_TYPE "Debug")
+else()
+    set(SKIA_BUILD_TYPE "Release")
+endif()
 
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
     set(SKIA_ARCH_TYPE "arm64")
@@ -10,12 +14,8 @@ else()
     set(SKIA_ARCH_TYPE "x64")
 endif()
 
-set(SKIA_LIBS_PATH "out/${SKIA_BUILD_TYPE}-${SKIA_ARCH_TYPE}")
-if(WIN32)
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(SKIA_BUILD_TYPE "Debug")
-    endif()
 
+if(WIN32)
     set(SKIA_OS_NAME "windows")
     set(SKIA_LIBS
         skia
@@ -29,6 +29,8 @@ else()
             "-framework CoreFoundation -framework CoreGraphics -framework CoreText -framework CoreServices"
             "-framework AppKit  -framework Metal"
         z)
+        # its crashing with debug binaries on mac, TODO check reason
+        set(SKIA_BUILD_TYPE "Release")
     else()
         set(SKIA_OS_NAME "linux")
         set(SKIA_LIBS
@@ -42,6 +44,7 @@ else()
     endif()
 endif()
 
+set(SKIA_LIBS_PATH "out/${SKIA_BUILD_TYPE}-${SKIA_ARCH_TYPE}")
 SET(SKIA_PREBUILT_FILE_NAME "Skia-${SKIA_TAG_NAME}-${SKIA_OS_NAME}-${SKIA_BUILD_TYPE}-${SKIA_ARCH_TYPE}.zip")
 message(STATUS "SKIA_PATH ${SKIA_PATH}")
 message(STATUS "SKIA_LIBS_PATH ${SKIA_LIBS_PATH}")
