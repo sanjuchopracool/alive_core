@@ -1,6 +1,6 @@
 set(SKIA_PATH ${CORE_THIRD_PARTY_BINARY_DIR}/skia)
-set(SKIA_TAG_NAME "m116-d2c211228d")
-set(SKIA_PREBUILT_DOWNLOAD_BASE_PATH "https://github.com/HumbleUI/SkiaBuild/releases/download")
+set(SKIA_TAG_NAME "m125-665b0e8923")
+set(SKIA_PREBUILT_DOWNLOAD_BASE_PATH "https://github.com/sanjuchopracool/SkiaBuild/releases/download")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(SKIA_BUILD_TYPE "Debug")
