@@ -29,8 +29,6 @@ else()
             "-framework CoreFoundation -framework CoreGraphics -framework CoreText -framework CoreServices"
             "-framework AppKit  -framework Metal"
         z)
-        # its crashing with debug binaries on mac, TODO check reason
-        set(SKIA_BUILD_TYPE "Release")
     else()
         set(SKIA_OS_NAME "linux")
         set(SKIA_LIBS

@@ -165,7 +165,7 @@ bool Exporter::export_as(const std::string &path, Format format)
     try {
         k_frame_index = 0;
         k_next_flushed_index = 0;
-        int num_threads = std::thread::hardware_concurrency() - 1;
+        int num_threads = std::thread::hardware_concurrency();
         INAE_CORE_INFO("Exporting with {} threads", num_threads);
 
         WebPAnimEncoder *encoder = nullptr;
