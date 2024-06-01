@@ -2,7 +2,6 @@ set(CORE_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
 set(CORE_THIRD_PARTY_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party)
 include(skia.cmake)
 add_subdirectory(third_party/lua)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
 
 set(INAE_CORE_INCLUDE_PATH
     ${SKIA_PATH}
