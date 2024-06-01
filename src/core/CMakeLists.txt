@@ -205,7 +205,7 @@ target_link_directories (
 target_link_libraries(core PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries (
     core
-    PUBLIC bezier
+    PUBLIC
     ${SKIA_LIBS}
     PRIVATE
     fmt
@@ -213,6 +213,8 @@ target_link_libraries (
     nlohmann_json::nlohmann_json
 )
 
+target_link_libraries(core PUBLIC
+    Magnum::Magnum)
 
 add_executable(skia_cpu skia_test_app/main_cpu.cpp)
 target_link_directories (

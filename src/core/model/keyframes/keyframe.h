@@ -3,9 +3,8 @@
 
 #include "keyframe_base.h"
 #include "keyframe_utility.h"
-#include <bezier/bezier.h>
+#include <Magnum/Math/Bezier.h>
 
-#include <vector>
 namespace inae::model {
 template<typename T>
 class KeyFrameTyped : public KeyFrame
@@ -30,7 +29,10 @@ public:
         : KeyFrame(property, time, is_hold, in_tangent, out_tangent, in_sp_tangent, out_sp_tangent)
         , m_value(value)
 
-    {}
+    {
+        m_curve[0] = {0.0, 0.0};
+        m_curve[3] = {1.0, 1.0};
+    }
 
     const T &value() const { return m_value; }
     void set_value(const T &value) { m_value = value; }
@@ -58,15 +60,17 @@ public:
                 in_point.x = 1;
                 in_point.y = 1;
             }
-            bezier::Bezier<3> curve(
-                {{0, 0}, {out_point.x, out_point.y}, {in_point.x, in_point.y}, {1, 1}});
-            progress = curve.valueAt(progress).y;
+
+            m_curve[1] = {out_point.x, out_point.y};
+            m_curve[2] = {in_point.x, in_point.y};
+            progress = m_curve.value(progress)[1];
         }
         return progress;
     }
 
 private:
     T m_value;
+    mutable Magnum::Math::CubicBezier2D<double> m_curve;
 };
 
 } // namespace inae::model

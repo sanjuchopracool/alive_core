@@ -8,16 +8,13 @@ function(inae_setup_dependencies)
    find_package(Boost)
    include_directories(${Boost_INCLUDE_DIRS})
 
+   find_package(Magnum REQUIRED)
+
   # For each dependency, see if it's
   # already been provided to us by a parent project
 
   if(NOT TARGET fmtlib::fmtlib)
     cpmaddpackage("gh:fmtlib/fmt#10.1.0")
-  endif()
-
-  if(NOT TARGET bezier)
-    set(BEZIER_TESTS OFF)
-    cpmaddpackage("gh:oysteinmyrmo/bezier#v0.2.1")
   endif()
 
   if(NOT TARGET nlohmann_json::nlohmann_json)
