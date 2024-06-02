@@ -21,6 +21,7 @@ struct FontInfo
 {
     sk_sp<SkTypeface> typeface;
     DatabaseAssetId db_id;
+    int style_name_index;
 };
 
 struct FamilyInfo
@@ -42,6 +43,41 @@ struct FontManagerPrivateData
     std::vector<FamilyInfo> family_info;
     int system_font_count = 0;
     bool system_fonts_loaded = false;
+
+    // valid only in case of db fonts
+    // keeping double memory for names, may be ok to release once all fonts loaded
+    // TODO
+    std::map<std::string, int32_t> style_name_to_style_id;
+    std::vector<std::string> style_names;
+
+    int32_t style_index(const std::string &name) const
+    {
+        auto it = style_name_to_style_id.find(name);
+        if (it != style_name_to_style_id.end()) {
+            return it->second;
+        }
+        return -1;
+    }
+
+    int32_t create_style_name_index(const std::string &name)
+    {
+        auto it = style_name_to_style_id.find(name);
+        if (it == style_name_to_style_id.end()) {
+            int32_t index = style_name_to_style_id.size();
+            style_name_to_style_id.emplace(name, index);
+            style_names.emplace_back(name);
+            return index;
+        }
+        return it->second;
+    }
+
+    const std::string &style_name(int32_t index) const
+    {
+        if (index > 0 && index < style_names.size()) {
+            return style_names[index];
+        }
+        return k_unknown_string;
+    }
 };
 
 FontManager::FontManager()
@@ -131,17 +167,8 @@ std::size_t FontManager::style_count(size_t family_id) const
 std::string FontManager::style_name(size_t family_id, size_t font_id) const
 {
     if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
-        return skia::to_string(m_d->fonts[family_id][font_id].typeface->fontStyle());
-    }
-    return k_unknown_string;
-}
-
-std::string FontManager::style_save_string(size_t family_id, size_t font_id) const
-{
-    if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
-        auto style = m_d->fonts[family_id][font_id].typeface->fontStyle();
-        return std::to_string(style.weight()) + ":" + std::to_string(style.width()) + ":"
-               + std::to_string(style.slant());
+        const auto &info = m_d->fonts[family_id][font_id];
+        return m_d->style_name(info.style_name_index);
     }
     return k_unknown_string;
 }
@@ -151,14 +178,9 @@ int FontManager::style_index(size_t family_id, const std::string &name) const
     if (family_id < m_d->fonts.size()) {
         auto &fonts = m_d->fonts[family_id];
         int index = 0;
-        std::vector<std::string> result;
-        boost::split(result, name, boost::is_any_of(":"));
-        int weight = std::stoi(result[0]);
-        int width = std::stoi(result[1]);
-        int slant = std::stoi(result[2]);
-        SkFontStyle style(weight, width, static_cast<SkFontStyle::Slant>(slant));
+        int32_t style_index = m_d->style_index(name);
         for (const auto &font_info : fonts) {
-            if (font_info.typeface->fontStyle() == style) {
+            if (font_info.style_name_index == style_index) {
                 return index;
             }
             index++;
@@ -183,15 +205,14 @@ FontImpl *FontManager::font_impl(size_t family_id, size_t font_id) const
     return nullptr;
 }
 
-void FontManager::add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId &db_id)
+void FontManager::add_typeface(sk_sp<SkTypeface> typeface,
+                               const DatabaseAssetId &db_id,
+                               const std::string &style)
 {
     if (typeface) {
         SkString family;
         typeface->getFamilyName(&family);
         std::string family_name(family.c_str());
-        INAE_CORE_TRACE("Adding Font Family {}, Style {}",
-                        family_name,
-                        skia::to_string(typeface->fontStyle()));
         uint32_t id = UINT32_MAX;
         auto &map = m_d->family_name_to_family_id;
         auto it = map.find(family_name);
@@ -202,13 +223,16 @@ void FontManager::add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId
             id = it->second;
         }
 
+        const std::string style_name = !db_id.is_valid() ? skia::to_string(typeface->fontStyle())
+                                                         : style;
+        int32_t style_name_index = m_d->create_style_name_index(style_name);
         auto &fonts = m_d->fonts;
         if (id >= fonts.size()) {
             fonts.emplace_back();
-            fonts.back().emplace_back(typeface, db_id);
+            fonts.back().emplace_back(typeface, db_id, style_name_index);
             m_d->family_info.emplace_back(family_name);
         } else {
-            fonts[id].emplace_back(typeface, db_id);
+            fonts[id].emplace_back(typeface, db_id, style_name_index);
         }
 
         if (!db_id.is_valid()) {
@@ -216,6 +240,7 @@ void FontManager::add_typeface(sk_sp<SkTypeface> typeface, const DatabaseAssetId
         } else {
             m_d->family_info[id].contains_db_fonts = true;
         }
+        INAE_CORE_TRACE("Adding Font Family {}, Style {}", family_name, style_name);
     }
 }
 

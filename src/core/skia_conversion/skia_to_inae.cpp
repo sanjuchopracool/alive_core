@@ -120,7 +120,7 @@ std::string font_width_to_string(int width)
         width_style += "ExtraCondensed";
         break;
     case SkFontStyle::kCondensed_Width:
-        width_style += "Condensed_Width";
+        width_style += "Condensed";
         break;
     case SkFontStyle::kSemiCondensed_Width:
         width_style += "SemiCondensed";
