@@ -20,13 +20,14 @@ void draw(SkCanvas *canvas)
 
     sk_sp<SkFontMgr> fontMgr;
 #ifdef __APPLE__
-    fontMgr.reset(SkFontMgr_New_CoreText(nullptr).release());
+    fontMgr = SkFontMgr_New_CoreText(nullptr);
 #endif
     std::cout << "Family count before: " << fontMgr->countFamilies() << std::endl;
     sk_sp<SkTypeface> typeface
         = fontMgr->makeFromFile("/Users/sanju/Downloads/Roboto_Condensed,Rubik/Roboto_Condensed/"
                                 "static/RobotoCondensed-ExtraBoldItalic.ttf",
                                 0);
+
     if (!typeface) {
         std::cout << "Could not create typeface" << std::endl;
         return;

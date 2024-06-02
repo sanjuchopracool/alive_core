@@ -1,6 +1,5 @@
 #include "resource_manager.h"
 #include <core/asset_management/font_manager.h>
-#include <filesystem>
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkStream.h>
 #include <include/core/SkTypeface.h>
@@ -18,16 +17,15 @@
 #include <include/utils/SkCustomTypeface.h>
 
 namespace inae::ResourceManager {
-constexpr auto k_fonts_suffix = "fonts";
-sk_sp<SkFontMgr> font_mgr;
+static sk_sp<SkFontMgr> font_mgr;
 
 void init_from_path(const std::string& path)
 {
     {
 #ifdef _WINDOWS
         font_mgr.reset(SkFontMgr_New_DirectWrite().release());
-#elif __APPLE__
-        font_mgr.reset(SkFontMgr_New_CoreText(nullptr).release());
+#elif defined(__APPLE__)
+        font_mgr = SkFontMgr_New_CoreText(nullptr);
 #else
         font_mgr.reset(SkFontMgr_New_Custom_Directory("/usr/share/fonts/").release());
 #endif

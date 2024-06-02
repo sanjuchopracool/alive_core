@@ -4,9 +4,9 @@
 #include <core/skia_conversion/skia_to_inae.h>
 
 #include "database.h"
+#include <boost/algorithm/string.hpp>
 #include <core/empty_values.h>
 #include <core/logging/logger.h>
-#include <filesystem>
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkTypeface.h>
 #include <map>
@@ -136,13 +136,29 @@ std::string FontManager::style_name(size_t family_id, size_t font_id) const
     return k_unknown_string;
 }
 
+std::string FontManager::style_save_string(size_t family_id, size_t font_id) const
+{
+    if (family_id < m_d->fonts.size() && font_id < m_d->fonts[family_id].size()) {
+        auto style = m_d->fonts[family_id][font_id].typeface->fontStyle();
+        return std::to_string(style.weight()) + ":" + std::to_string(style.width()) + ":"
+               + std::to_string(style.slant());
+    }
+    return k_unknown_string;
+}
+
 int FontManager::style_index(size_t family_id, const std::string &name) const
 {
     if (family_id < m_d->fonts.size()) {
         auto &fonts = m_d->fonts[family_id];
         int index = 0;
+        std::vector<std::string> result;
+        boost::split(result, name, boost::is_any_of(":"));
+        int weight = std::stoi(result[0]);
+        int width = std::stoi(result[1]);
+        int slant = std::stoi(result[2]);
+        SkFontStyle style(weight, width, static_cast<SkFontStyle::Slant>(slant));
         for (const auto &font_info : fonts) {
-            if (skia::to_string(font_info.typeface->fontStyle()) == name) {
+            if (font_info.typeface->fontStyle() == style) {
                 return index;
             }
             index++;

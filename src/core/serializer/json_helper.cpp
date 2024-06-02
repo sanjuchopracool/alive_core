@@ -82,8 +82,8 @@ JsonObject json_value(const core::TextDocumentProperty &text)
     nlohmann::ordered_json result;
     result[k_font_size_key] = text.m_font.size;
     result[k_font_family_key] = core::FontManager::instance().family_name(text.m_font.family);
-    result[k_inae_font_style_key] = core::FontManager::instance().style_name(text.m_font.family,
-                                                                             text.m_font.style);
+    result[k_inae_font_style_key]
+        = core::FontManager::instance().style_save_string(text.m_font.family, text.m_font.style);
     if (text.m_fill) {
         result[k_fill_color_key] = json::json_value(text.m_fill_color);
     }
