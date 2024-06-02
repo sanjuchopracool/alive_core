@@ -54,15 +54,16 @@ void FileDatabase::init_fonts()
     std::string db_path = m_path + '/';
     for (const auto &font : m_font_id_to_path) {
         std::filesystem::path path(db_path + font.second);
-        INAE_CORE_TRACE("{}", path.c_str());
-        auto typeface = ResourceManager::system_font_manager().makeFromFile(path.c_str());
+        std::string path_name = path.string();
+        INAE_CORE_TRACE("{}", path_name);
+        auto typeface = ResourceManager::system_font_manager().makeFromFile(path_name.c_str());
         // find style name, base name seperated by - and last of that
         std::vector<std::string> result;
         boost::split(result, path.stem().string(), boost::is_any_of("-"));
         if (result.size()) {
             FontManager::instance().add_typeface(typeface, {m_id, font.first}, result.back());
         } else {
-            INAE_CORE_ERROR("Invalid Style Name for : {}", path.c_str());
+            INAE_CORE_ERROR("Invalid Style Name for : {}", path_name);
         }
     }
 }
