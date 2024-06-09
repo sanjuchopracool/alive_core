@@ -51,10 +51,14 @@ public:
     const std::string &name() const { return m_name; }
     void set_name(const std::string &name);
 
+    // editor specific
     const std::string &get_uuid() const { return m_uuid; }
     void set_uuid(const std::string &uuid);
 
     int layers_max_index() const;
+
+    void set_show_matte_details(bool show) { m_show_matte_details = show; }
+    bool show_matte_details() const { return m_show_matte_details; }
 
 private:
     void set_layers(Layers &layers);
@@ -74,6 +78,7 @@ protected:
 
     // editor specific
     std::string m_uuid;
+    bool m_show_matte_details = false;
 
 private:
     friend class inae::core::Serializer;
