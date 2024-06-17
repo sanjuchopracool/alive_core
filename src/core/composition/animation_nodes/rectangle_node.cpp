@@ -40,15 +40,15 @@ void RectangleNode::create_path()
 
     Vec2D size = m_size->value();
     Vec2D position = m_position->value();
-    Vec1D half_w = size.x / 2.f;
-    Vec1D half_h = size.y / 2.f;
+    Vec1D half_w = size.x() / 2.f;
+    Vec1D half_h = size.y() / 2.f;
     Vec1D r = m_roundness->value();
 
     r = std::min(r, std::min(half_h, half_w));
 
     auto radius_rect = [&](Vec2D center) -> SkRect {
         SkRect rect = SkRect::MakeLTRB(-r, -r, r, r);
-        rect.offset(center.x, center.y);
+        rect.offset(center.x(), center.y());
         return rect;
     };
 
@@ -81,7 +81,7 @@ void RectangleNode::create_path()
     }
     m_path.close();
 
-    m_path.offset(position.x, position.y, nullptr);
+    m_path.offset(position.x(), position.y(), nullptr);
     apply_trim();
 }
 } // namespace inae::model

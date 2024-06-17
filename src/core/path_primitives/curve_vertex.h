@@ -8,9 +8,9 @@ namespace inae::core {
 class CurveVertex
 {
 public:
-    CurveVertex(const SkPoint &point = SkPoint(),
-                const SkPoint &in_point = SkPoint(),
-                const SkPoint &out_point = SkPoint())
+    CurveVertex(const Point &point = Point(),
+                const Point &in_point = Point(),
+                const Point &out_point = Point())
         : m_point(point)
         , m_in_point(in_point)
         , m_out_point(out_point)
@@ -18,9 +18,9 @@ public:
 
     }
 
-    static CurveVertex from_relative(const SkPoint &point,
-                                     const SkPoint &in_point,
-                                     const SkPoint &out_point)
+    static CurveVertex from_relative(const Point &point,
+                                     const Point &in_point,
+                                     const Point &out_point)
     {
         return CurveVertex(point, point + in_point, point + out_point);
     }
@@ -33,7 +33,7 @@ public:
         return  CurveVertex(m_point, m_out_point, m_in_point);
     }
 
-    CurveVertex reveresed(const SkPoint &translation) const
+    CurveVertex reveresed(const Point &translation) const
     {
         return  CurveVertex(m_point + translation, m_in_point + translation, m_out_point + translation);
     }

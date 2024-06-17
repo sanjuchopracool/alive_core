@@ -38,10 +38,10 @@ SkMatrix ShapeTransformationNode::transform() const
     auto scale = m_scale->value() / 100;
 
     SkMatrix tr;
-    tr.preTranslate(pos.x, pos.y)
+    tr.preTranslate(pos.x(), pos.y())
         .preRotate(rotation)
-        .preScale(scale.x, scale.y)
-        .preTranslate(-anchor.x, -anchor.y);
+        .preScale(scale.x(), scale.y())
+        .preTranslate(-anchor.x(), -anchor.y());
 
     return tr;
 }

@@ -41,8 +41,8 @@ void EllipseNode::create_path()
 
     Vec2D size = m_size->value();
     Vec2D position = m_position->value();
-    Vec1D half_width = size.x / 2.f;
-    Vec1D half_height = size.y / 2.f;
+    Vec1D half_width = size.x() / 2.f;
+    Vec1D half_height = size.y() / 2.f;
 
     Vec1D el_w = half_width * k_ellipse_control_point_percentage;
     Vec1D el_h = half_height * k_ellipse_control_point_percentage;
@@ -62,7 +62,7 @@ void EllipseNode::create_path()
     }
     m_path.close();
 
-    m_path.offset(position.x, position.y, nullptr);
+    m_path.offset(position.x(), position.y(), nullptr);
     apply_trim();
 }
 } // namespace inae::model

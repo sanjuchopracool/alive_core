@@ -11,18 +11,18 @@ namespace inae {
 
 inline SkColor skcolor_from_vec3d(Vec3D value)
 {
-    if (value.x <= 1 && value.y <= 1 && value.z <= 1) {
-        return SkColorSetARGB(255, value.x * 255, value.y * 255, value.z * 255);
+    if (value.x() <= 1 && value.y() <= 1 && value.z() <= 1) {
+        return SkColorSetARGB(255, value.x() * 255, value.y() * 255, value.z() * 255);
     }
-    return SkColorSetARGB(255, value.x, value.y, value.z);
+    return SkColorSetARGB(255, value.x(), value.y(), value.z());
 }
 
 inline Vec3D skcolor_to_vec3d(SkColor c)
 {
     Vec3D val;
-    val.x = SkColorGetR(c) / 255.0;
-    val.y = SkColorGetG(c) / 255.0;
-    val.z = SkColorGetB(c) / 255.0;
+    val.x() = SkColorGetR(c) / 255.0;
+    val.y() = SkColorGetG(c) / 255.0;
+    val.z() = SkColorGetB(c) / 255.0;
     return val;
 }
 

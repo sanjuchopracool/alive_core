@@ -48,19 +48,19 @@ struct Vec2DMinPropertyValueValidator : public PropertyValueValidator<T>
 
     bool is_valid(const T &val) const override
     {
-        if (val.x < m_min.x || val.y < m_min.y)
+        if (val.x() < m_min.x() || val.y() < m_min.y())
             return false;
 
         return true;
     }
     bool validate(T &val) const override
     {
-        if (val.x < m_min.x) {
-            val.x = m_min.x;
+        if (val.x() < m_min.x()) {
+            val.x() = m_min.x();
         }
 
-        if (val.y < m_min.y) {
-            val.y = m_min.y;
+        if (val.y() < m_min.y()) {
+            val.y() = m_min.y();
         }
 
         return true;

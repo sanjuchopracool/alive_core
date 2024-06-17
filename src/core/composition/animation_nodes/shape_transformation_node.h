@@ -4,6 +4,7 @@
 #include "animation_node.h"
 #include <core/composition/interfaces/painting_element.h>
 #include <core/model/property/dynamic_property.h>
+#include <include/core/SkMatrix.h>
 
 namespace inae::model {
 class ShapeTransformation;

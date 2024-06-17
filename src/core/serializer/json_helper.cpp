@@ -115,7 +115,7 @@ void decode_bezier(core::BezierPath &path, JsonObject &in_value)
         assertm(data.is_array(), "vertices index should");
         float x = data.at(0);
         float y = data.at(1);
-        return SkPoint::Make(x, y);
+        return Vec2D(x, y);
     };
     auto first_vertex = core::CurveVertex::from_relative(json_to_point(vertices_array.at(0)),
                                                          json_to_point(in_points_array.at(0)),

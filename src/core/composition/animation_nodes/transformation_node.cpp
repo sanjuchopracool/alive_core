@@ -35,17 +35,17 @@ SkMatrix LayerTransformationNode::transform() const
     auto anchor = m_anchor->value();
     auto pos = m_position->value();
     auto rotation = m_rotation->value();
-    auto scale = m_scale->value() / 100;
+    auto scale = m_scale->value() / 100.0f;
 
     SkMatrix tr;
     //    canvas->translate(pos.x, pos.y);
     //    canvas->rotate(rotation);
     //    canvas->scale(scale.x, scale.y);
     //    canvas->translate(-anchor.x, -anchor.y);
-    tr.preTranslate(pos.x, pos.y)
+    tr.preTranslate(pos.x(), pos.y())
         .preRotate(rotation)
-        .preScale(scale.x, scale.y)
-        .preTranslate(-anchor.x, -anchor.y);
+        .preScale(scale.x(), scale.y())
+        .preTranslate(-anchor.x(), -anchor.y());
 
     return tr;
 }

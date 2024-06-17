@@ -193,7 +193,7 @@ set_property(TARGET core PROPERTY COMPILE_WARNING_AS_ERROR ON)
 cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH INAE_CORE_SOURCE_PARENT_DIR)
 target_include_directories(core
     PUBLIC ${INAE_CORE_SOURCE_PARENT_DIR}
-    ${INAE_CORE_INCLUDE_PATH}
+    PRIVATE ${INAE_CORE_INCLUDE_PATH}
 )
 
 target_link_directories (
@@ -205,7 +205,7 @@ target_link_directories (
 target_link_libraries(core PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries (
     core
-    PUBLIC
+    PRIVATE
     ${SKIA_LIBS}
     PRIVATE
     fmt
@@ -246,7 +246,7 @@ target_link_libraries (
 add_executable(script_sandbox script_sandbox/main.cpp)
 target_link_directories (
     script_sandbox
-    PUBLIC
+    PRIVATE
     ${SKIA_PATH}/${SKIA_LIBS_PATH}
 )
 target_link_libraries (

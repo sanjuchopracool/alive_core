@@ -54,18 +54,21 @@ const SkPath &BezierPath::path() const
         if (el_size)
         {
             const auto *prev_el = &m_elements.front();
-            m_path.moveTo(prev_el->m_vertex.m_point);
+            m_path.moveTo(prev_el->m_vertex.m_point.x(), prev_el->m_vertex.m_point.y());
             for (int i = 1; i < el_size; ++i)
             {
                 const auto *el = &m_elements[i];
 
                 if (prev_el->m_vertex.out_relative_tangent().isZero()
                     and el->m_vertex.in_relative_tangent().isZero()) {
-                    m_path.lineTo(el->m_vertex.m_point);
+                    m_path.lineTo(el->m_vertex.m_point.x(), el->m_vertex.m_point.y());
                 } else {
-                    m_path.cubicTo(prev_el->m_vertex.m_out_point,
-                                   el->m_vertex.m_in_point,
-                                   el->m_vertex.m_point);
+                    m_path.cubicTo(prev_el->m_vertex.m_out_point.x(),
+                                   prev_el->m_vertex.m_out_point.y(),
+                                   el->m_vertex.m_in_point.x(),
+                                   el->m_vertex.m_in_point.y(),
+                                   el->m_vertex.m_point.x(),
+                                   el->m_vertex.m_point.y());
                 }
 
                 prev_el = el;

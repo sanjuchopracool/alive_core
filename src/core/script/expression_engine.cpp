@@ -14,35 +14,35 @@ void register_types(sol::state &lua)
     sol::usertype<Vec3D> vec3_typ = lua.new_usertype<Vec3D>("Vec3D", sol::constructors<Vec3D()>());
     vec3_typ["create"] = &create_vec3d;
     vec3_typ["x"] = &Vec3D::x;
-    vec3_typ["y"] = &Vec3D::y;
-    vec3_typ["z"] = &Vec3D::z;
+    // vec3_typ["y"] = &Vec3D::y;
+    // vec3_typ["z"] = &Vec3D::z;
 
     // Vec2D
-    sol::usertype<Vec2D> vec2_typ = lua.new_usertype<Vec2D>("Vec2D");
-    vec2_typ["create"] = &create_vec2d;
-    vec2_typ["x"] = &Vec2D::x;
-    vec2_typ["y"] = &Vec2D::y;
+    // sol::usertype<Vec2D> vec2_typ = lua.new_usertype<Vec2D>("Vec2D");
+    // vec2_typ["create"] = &create_vec2d;
+    // vec2_typ["x"] = &Vec2D::x;
+    // vec2_typ["y"] = &Vec2D::y;
 
     // Rect
-    sol::usertype<Rect> rect_typ = lua.new_usertype<Rect>("Rect");
-    rect_typ["x"] = sol::readonly_property(&Rect::x);
-    rect_typ["y"] = sol::readonly_property(&Rect::y);
-    rect_typ["left"] = sol::readonly_property(&Rect::left);
-    rect_typ["right"] = sol::readonly_property(&Rect::right);
-    rect_typ["top"] = sol::readonly_property(&Rect::top);
-    rect_typ["bottom"] = sol::readonly_property(&Rect::bottom);
-    rect_typ["width"] = sol::readonly_property(&Rect::width);
-    rect_typ["height"] = sol::readonly_property(&Rect::height);
-    rect_typ["center"] = sol::readonly_property(&Rect::center);
-    rect_typ["center_x"] = sol::readonly_property(&Rect::centerX);
-    rect_typ["center_y"] = sol::readonly_property(&Rect::centerY);
+    // sol::usertype<Rect> rect_typ = lua.new_usertype<Rect>("Rect");
+    // rect_typ["x"] = sol::readonly_property(&Rect::x);
+    // rect_typ["y"] = sol::readonly_property(&Rect::y);
+    // rect_typ["left"] = sol::readonly_property(&Rect::left);
+    // rect_typ["right"] = sol::readonly_property(&Rect::right);
+    // rect_typ["top"] = sol::readonly_property(&Rect::top);
+    // rect_typ["bottom"] = sol::readonly_property(&Rect::bottom);
+    // rect_typ["width"] = sol::readonly_property(&Rect::width);
+    // rect_typ["height"] = sol::readonly_property(&Rect::height);
+    // rect_typ["center"] = sol::readonly_property(&Rect::center);
+    // rect_typ["center_x"] = sol::readonly_property(&Rect::centerX);
+    // rect_typ["center_y"] = sol::readonly_property(&Rect::centerY);
 
-    // Point
-    sol::usertype<Point> point_typ = lua.new_usertype<Point>("Point");
-    point_typ["x"] = sol::readonly_property(&Point::x);
-    point_typ["y"] = sol::readonly_property(&Point::y);
-    point_typ["is_zero"] = sol::readonly_property(&Point::isZero);
-    point_typ["create"] = &SkPoint::Make;
+    // // Point
+    // sol::usertype<Point> point_typ = lua.new_usertype<Point>("Point");
+    // point_typ["x"] = sol::readonly_property(&Point::x);
+    // point_typ["y"] = sol::readonly_property(&Point::y);
+    // point_typ["is_zero"] = sol::readonly_property(&Point::isZero);
+    // point_typ["create"] = &SkPoint::Make;
 
     // Text
     sol::usertype<core::TextDocumentProperty> text_type

@@ -51,18 +51,18 @@ public:
         if ((not is_null(m_out_tangent)) or (not is_null(to->in_tangent()))) {
             Vec2D out_point = m_out_tangent;
             if (is_null(out_point)) {
-                out_point.x = 0;
-                out_point.y = 0;
+                out_point.x() = 0;
+                out_point.y() = 0;
             }
 
             Vec2D in_point = to->in_tangent();
             if (is_null(in_point)) {
-                in_point.x = 1;
-                in_point.y = 1;
+                in_point.x() = 1;
+                in_point.y() = 1;
             }
 
-            m_curve[1] = {out_point.x, out_point.y};
-            m_curve[2] = {in_point.x, in_point.y};
+            m_curve[1] = {out_point.x(), out_point.y()};
+            m_curve[2] = {in_point.x(), in_point.y()};
             progress = m_curve.value(progress)[1];
         }
         return progress;

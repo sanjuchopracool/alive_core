@@ -1,8 +1,9 @@
 #include "curve_vertex.h"
+#include <Magnum/Math/Distance.h>
 #include <algorithm>
+#include <core/model/keyframes/keyframe_utility.h>
 #include <include/core/SkPath.h>
 #include <include/core/SkPathMeasure.h>
-#include <core/model/keyframes/keyframe_utility.h>
 
 namespace inae::core {
 
@@ -11,11 +12,9 @@ SplitResult split_curve(const CurveVertex& from, const CurveVertex& to, float am
     SplitResult result;
     if (amount <= 0)
     {
-        result.start = CurveVertex::from_relative(from.m_point,
-                                                  from.in_relative_tangent(),
-                                                  SkPoint());
+        result.start = CurveVertex::from_relative(from.m_point, from.in_relative_tangent(), Point());
         result.trim_point = CurveVertex::from_relative(from.m_point,
-                                                       SkPoint(),
+                                                       Point(),
                                                        from.out_relative_tangent());
         result.end = to;
         return  result;
@@ -26,19 +25,19 @@ SplitResult split_curve(const CurveVertex& from, const CurveVertex& to, float am
         result.start = from;
         result.trim_point = CurveVertex::from_relative(to.m_point,
                                                        to.in_relative_tangent(),
-                                                       SkPoint());
-        result.end = CurveVertex::from_relative(to.m_point, SkPoint(), to.out_relative_tangent());
+                                                       Point());
+        result.end = CurveVertex::from_relative(to.m_point, Point(), to.out_relative_tangent());
         return  result;
     }
 
     if (from.out_relative_tangent().isZero() and to.in_relative_tangent().isZero()) {
         result.start = from;
-        result.trim_point = CurveVertex(interpolate<SkPoint>(from.m_point, to.m_point, amount));
+        result.trim_point = CurveVertex(interpolate<Point>(from.m_point, to.m_point, amount));
         result.end = to;
     }
 
-    SkPoint a = interpolate<SkPoint>(from.m_point, from.m_out_point, amount);
-    SkPoint b = interpolate(from.m_out_point, to.m_in_point, amount);
+    Point a = interpolate<Point>(from.m_point, from.m_out_point, amount);
+    Point b = interpolate(from.m_out_point, to.m_in_point, amount);
     auto c = interpolate(to.m_in_point, to.m_point, amount);
     auto d = interpolate(a, b, amount);
     auto e = interpolate(b, c, amount);
@@ -81,23 +80,28 @@ SplitResult trim_curve(const CurveVertex& from, const CurveVertex& to,
 float CurveVertex::distance_to(const CurveVertex &to, int sample) const
 {
     if (out_relative_tangent().isZero() && to.in_relative_tangent().isZero())
-        return SkPoint::Distance(m_point, to.m_point);
+        return Magnum::Math::Distance::pointPoint(m_point, to.m_point);
 
     float distance = 0;
-    SkPoint previous_point = m_point;
+    Point previous_point = m_point;
     for (int i = 0; i < sample; ++i) {
         auto next_point = split_curve(*this, to, static_cast<float>(i) / static_cast<float>(sample))
                               .trim_point.m_point;
-        distance += SkPoint::Distance(previous_point, next_point);
+        distance += Magnum::Math::Distance::pointPoint(previous_point, next_point);
         previous_point = next_point;
     }
 
-    distance += SkPoint::Distance(previous_point, to.m_point);
+    distance += Magnum::Math::Distance::pointPoint(previous_point, to.m_point);
     return distance;
 
     SkPath path;
-    path.moveTo(m_point);
-    path.cubicTo(m_out_point, to.m_in_point, to.m_point);
+    path.moveTo(m_point.x(), m_point.y());
+    path.cubicTo(m_out_point.x(),
+                 m_out_point.y(),
+                 to.m_in_point.x(),
+                 to.m_in_point.y(),
+                 to.m_point.x(),
+                 to.m_point.y());
     SkPathMeasure path_measure;
     path_measure.setPath(&path, false);
     return path_measure.getLength();
@@ -105,9 +109,9 @@ float CurveVertex::distance_to(const CurveVertex &to, int sample) const
 
 CurveVertex interpolate(const CurveVertex &from, const CurveVertex &to, float amount)
 {
-    return CurveVertex(interpolate<SkPoint>(from.m_point, to.m_point, amount),
-                       interpolate<SkPoint>(from.m_in_point, to.m_in_point, amount),
-                       interpolate<SkPoint>(from.m_out_point, to.m_out_point, amount));
+    return CurveVertex(interpolate<Point>(from.m_point, to.m_point, amount),
+                       interpolate<Point>(from.m_in_point, to.m_in_point, amount),
+                       interpolate<Point>(from.m_out_point, to.m_out_point, amount));
 }
 
 } // namespace inae::core

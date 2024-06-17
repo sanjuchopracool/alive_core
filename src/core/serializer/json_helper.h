@@ -52,9 +52,9 @@ inline void decode(int &val, const JsonObject &in_value)
 inline void decode(Vec3D &val, const JsonObject &in_value)
 {
     if (in_value.is_array() && in_value.size() >= 3) {
-        val.x = in_value.at(0);
-        val.y = in_value.at(1);
-        val.z = in_value.at(2);
+        val.x() = in_value.at(0);
+        val.y() = in_value.at(1);
+        val.z() = in_value.at(2);
     } else {
         val = {};
     }
@@ -63,40 +63,40 @@ inline void decode(Vec3D &val, const JsonObject &in_value)
 inline JsonObject json_value(const Vec3D &value)
 {
     JsonObject array;
-    array.push_back(value.x);
-    array.push_back(value.y);
-    array.push_back(value.z);
+    array.push_back(value.x());
+    array.push_back(value.y());
+    array.push_back(value.z());
     return array;
 }
 
 inline JsonObject json_value(const Vec2D &value)
 {
     JsonObject array;
-    array.push_back(value.x);
-    array.push_back(value.y);
+    array.push_back(value.x());
+    array.push_back(value.y());
     return array;
 }
 
 inline void decode(Vec2D &val, const JsonObject &in_value)
 {
     assertm(in_value.is_array() && in_value.size() == 2, "Vec2D must be an array of size 2!");
-    val.x = in_value.at(0);
-    val.y = in_value.at(1);
+    val.x() = in_value.at(0);
+    val.y() = in_value.at(1);
 }
 
 inline void decode_keyframe_tangent(Vec2D &obj, const JsonObject &in_value)
 {
     JsonObject x = in_value["x"];
-    obj.x = x.is_array() ? x.at(0) : x;
+    obj.x() = x.is_array() ? x.at(0) : x;
     JsonObject y = in_value["y"];
-    obj.y = y.is_array() ? y.at(0) : y;
+    obj.y() = y.is_array() ? y.at(0) : y;
 }
 
 inline JsonObject keyframe_tangent_to_json(const Vec2D &obj)
 {
     JsonObject result;
-    result["x"] = obj.x;
-    result["y"] = obj.y;
+    result["x"] = obj.x();
+    result["y"] = obj.y();
     return result;
 }
 

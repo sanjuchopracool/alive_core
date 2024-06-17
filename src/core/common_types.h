@@ -3,7 +3,6 @@
 
 #include <assert.h>
 #include <core/inae_types/types.h>
-#include <include/core/SkM44.h>
 #include <string>
 #include <vector>
 
@@ -29,17 +28,13 @@ using KeyFrameTime = int;
 
 inline bool is_null(const Vec2D &val)
 {
-    return val.x == k_null_float_value && val.y == k_null_float_value;
+    return val.x() == k_null_float_value && val.y() == k_null_float_value;
 }
 
 inline bool is_null(const Vec3D &val)
 {
-    return val.x == k_null_float_value && val.y == k_null_float_value
-           && val.z == k_null_float_value;
-}
-inline Vec3D operator/(Vec3D v, SkScalar s)
-{
-    return {v.x / s, v.y / s, v.z / s};
+    return val.x() == k_null_float_value && val.y() == k_null_float_value
+           && val.z() == k_null_float_value;
 }
 
 enum class CoordinateSpace {
