@@ -1,0 +1,5 @@
+add_subdirectory(core)
+add_subdirectory(core_utility)
+add_subdirectory(c_wrapper)
+add_subdirectory(tester)
+add_subdirectory(test)

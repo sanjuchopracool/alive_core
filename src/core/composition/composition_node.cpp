@@ -1,0 +1,203 @@
+#include "composition_node.h"
+#include "composition_layer_factory.h"
+#include <core/model/composition.h>
+#include <core/model/layers/layer.h>
+
+#include <algorithm>
+#include <core/composition/animation_nodes/animation_node.h>
+#include <core/composition/paint_context.h>
+#include <core/composition/precomposition_layer_node.h>
+#include <core/composition/shape_layer_node.h>
+#include <core/composition/solid_layer_node.h>
+#include <core/model/layers/shape_layer.h>
+#include <core/script/expression_engine.h>
+#include <include/core/SkCanvas.h>
+#include <core/composition/canvasbuffer.h>
+
+namespace alive::model {
+
+CompositionNode::CompositionNode(const model::Composition *animation, bool create_playground_engine)
+    : m_animation(animation)
+    , m_expr_engine(std::make_unique<script::ExpressionEngine>(*this))
+{
+    load_layers();
+}
+
+CompositionNode::~CompositionNode() {}
+
+void CompositionNode::draw(SkCanvas *canvas)
+{
+    PaintContext ctx{*canvas, 255};
+    for (auto it = m_layers_nodes.rbegin(); it != m_layers_nodes.rend(); ++it)
+        (*it)->draw(ctx);
+}
+
+bool CompositionNode::update(FrameTimeType t, bool force_update)
+{
+    m_dirty = false;
+    m_last_updated_frame = t;
+    m_expr_engine->update_time(t);
+    UpdateContext context(t, force_update, *m_expr_engine);
+    for (auto it = m_layers_nodes.rbegin(); it != m_layers_nodes.rend(); ++it)
+        (*it)->update_layer(context);
+    return m_dirty;
+}
+
+void CompositionNode::slot_new_layer_added(Layer *layer, int index)
+{
+    if (layer) {
+        assertm(index <= m_layers_nodes.size(), "Invalid Layer Node Index");
+        auto layer_node = CompositionLayerFactory::composition_layer(layer);
+        if (layer_node) {
+            m_layers_nodes.emplace(m_layers_nodes.begin() + index, layer_node.release());
+            observe(m_layers_nodes[index].get());
+        }
+    }
+}
+
+void CompositionNode::slot_about_to_remove_layer(Layer *layer)
+{
+    if (layer) {
+        auto it = std ::find_if(m_layers_nodes.begin(),
+                                m_layers_nodes.end(),
+                                [layer](const auto &u_ptr) { return u_ptr->layer() == layer; });
+
+        if (it != m_layers_nodes.end()) {
+            // remove matte
+            for (auto &other : m_layers_nodes) {
+                if (other->matte_layer() == it->get()) {
+                    other->set_matte_layer(nullptr);
+                }
+            }
+
+            stop_observing(it->get());
+            m_layers_nodes.erase(it);
+        }
+    }
+}
+
+void CompositionNode::slot_layer_index_changed(Layer *layer, int index, bool is_matte)
+{
+    if (layer) {
+        auto layer_node = layer_from_layer_index(layer->layer_index());
+        auto layer_to_set = layer_from_layer_index(index);
+        if (layer_node) {
+            if (is_matte) {
+                layer_node->set_matte_layer(layer_to_set);
+            } else {
+                layer_node->set_parent_layer(layer_to_set);
+            }
+        }
+    }
+}
+
+void CompositionNode::slot_new_shape_added(ShapeLayer *shape_layer,
+                                           Group *group,
+                                           ShapeItem *shape,
+                                           int shape_index)
+{
+    if (shape_layer) {
+        for (const auto &layer : m_layers_nodes) {
+            if (layer->layer() == shape_layer) {
+                assert(shape_layer->layer_type() == LayerType::e_Shape);
+                static_cast<ShapeLayerNode *>(layer.get())->on_shape_added(group, shape, shape_index);
+            }
+        }
+    }
+}
+
+void CompositionNode::slot_about_to_remove_shape(ShapeLayer *shape_layer,
+                                                 Group *group,
+                                                 ShapeItem *shape)
+{
+    if (shape_layer) {
+        for (const auto &layer : m_layers_nodes) {
+            if (layer->layer() == shape_layer) {
+                assert(shape_layer->layer_type() == LayerType::e_Shape);
+                static_cast<ShapeLayerNode *>(layer.get())->on_shape_removed(group, shape);
+            }
+        }
+    }
+}
+
+bool CompositionNode::slot_move_shapes(ShapeLayer *shape_layer, Object *group, int from, int to)
+{
+    if (shape_layer) {
+        for (const auto &layer : m_layers_nodes) {
+            if (layer->layer() == shape_layer) {
+                assert(shape_layer->layer_type() == LayerType::e_Shape);
+                return static_cast<ShapeLayerNode *>(layer.get())->on_shapes_moved(group, from, to);
+            }
+        }
+    }
+    return false;
+}
+
+bool CompositionNode::slot_move_layer(int from, int to)
+{
+    bool result = false;
+    if ((from != to) && (from >= 0 && from < m_layers_nodes.size())
+        && (to >= 0 && to < m_layers_nodes.size())) {
+        auto *layer = m_layers_nodes[from].release();
+        m_layers_nodes.erase(m_layers_nodes.begin() + from);
+        m_layers_nodes.emplace(m_layers_nodes.begin() + to, layer);
+    }
+
+    return result;
+}
+script::ExpressionEngineInterface *CompositionNode::property_engine() const
+{
+    return m_expr_engine.get();
+}
+
+void CompositionNode::load_layers(){
+    alive::model::load_layers(this, m_animation->layers(), m_layers_nodes);
+}
+
+Color4ub CompositionNode::canvas_background_color() const
+{
+    return m_animation->canvas_background_color();
+}
+
+FrameTimeType CompositionNode::fps() const
+{
+    return m_animation->framerate();
+}
+LayerNode *CompositionNode::layer_from_layer_index(int index) const
+{
+    if (index == -1) {
+        return nullptr;
+    }
+
+    for (const auto &ptr : m_layers_nodes) {
+        if (index == ptr->layer_index()) {
+            return ptr.get();
+        }
+    }
+    return nullptr;
+}
+
+RasterCompositionNode::RasterCompositionNode(const Composition *animation, bool create_playground_engine)
+    : CompositionNode(animation, create_playground_engine),
+      m_buffer(Corrade::Containers::pointer<CanvasBuffer>())
+{
+
+}
+
+RasterCompositionNode::~RasterCompositionNode()
+{
+
+}
+
+void RasterCompositionNode::resize(int32_t width, int32_t height)
+{
+    m_buffer->resize(width, height);
+}
+
+const uint8_t *RasterCompositionNode::draw_data()
+{
+    m_buffer->draw(this, Matrix3D(), true);
+    return m_buffer->data();
+}
+
+} // namespace alive::model

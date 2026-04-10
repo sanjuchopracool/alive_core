@@ -1,0 +1,2 @@
+1. How to play lottie animation with skottie ?
+    viewer.exe -f  C:\Users\sanju\OneDrive\Desktop\SHAPE_LAYER.json

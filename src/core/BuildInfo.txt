@@ -1,0 +1,2 @@
+Windows : MSVC 19.42.34436.0
+Mac : Clang 18

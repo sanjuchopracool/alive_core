@@ -1,0 +1,3 @@
+av1 format
+
+return this_comp:get_solid_layer("Solid_5"):transform():position()
